@@ -275,6 +275,7 @@ export default function Home() {
 
   const handleDeleteAllData = () => {
     if (deleteConfirmText === 'DELETE') {
+      // Clear saved templates
       localStorage.removeItem('costarSavedItems');
       setSavedItems({
         context: [],
@@ -284,6 +285,11 @@ export default function Home() {
         audience: [],
         response: [],
       });
+
+      // Clear saved prompts
+      localStorage.removeItem('costarSavedPrompts');
+      setSavedPrompts([]);
+
       setIsDeleteConfirmOpen(false);
       setIsSettingsOpen(false);
       setShowToast(true);
