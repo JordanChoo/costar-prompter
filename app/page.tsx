@@ -577,7 +577,7 @@ export default function Home() {
                 <div className="border-t border-black/[.08] dark:border-white/[.08] pt-4">
                   <h4 className="text-base font-semibold text-red-500">Delete All Data</h4>
                   <p className="mt-2 mb-4 text-sm text-foreground/70">
-                    This will permanently delete all your saved templates across all sections. 
+                    This will permanently delete all your saved data, including templates and prompts. 
                     This action cannot be undone.
                   </p>
                   <button
@@ -678,7 +678,7 @@ export default function Home() {
               </div>
               <div className="space-y-4">
                 <p className="text-foreground/70">
-                  This action will permanently delete all your saved templates. 
+                  This action will permanently delete all your saved data, including templates and prompts. 
                   To confirm, please type <span className="font-mono font-bold">DELETE</span> below:
                 </p>
                 <input
