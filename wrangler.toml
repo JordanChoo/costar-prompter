@@ -6,6 +6,7 @@ compatibility_flags = ["nodejs_compat"]
 command = "npm run pages:deploy"
 [build.upload]
 format = "service-worker"
+node_version = "20.9.0"
 
 [site]
 bucket = ".vercel/output/static" 
