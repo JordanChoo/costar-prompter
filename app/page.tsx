@@ -80,13 +80,22 @@ export default function Home() {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
-        goToNextStep();
+        e.preventDefault();
+        if (formData[currentStep].trim()) {
+          if (currentIndex < stepKeys.length - 1) {
+            setCurrentStep([stepKeys[currentIndex + 1], 1]);
+          } else {
+            generatePrompt();
+          }
+        } else {
+          setError(`Please provide ${steps[currentStep].title.toLowerCase()} information`);
+        }
       }
     };
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [currentIndex]);
+  }, [currentStep, currentIndex, formData]);
 
   useEffect(() => {
     const textarea = document.querySelector('textarea');
