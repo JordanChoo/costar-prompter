@@ -169,6 +169,7 @@ export default function Home() {
     }
 
     setError(null);
+    setSelectedTemplate(null);
     if (currentIndex < stepKeys.length - 1) {
       setCurrentStep([stepKeys[currentIndex + 1], 1]);
     } else {
@@ -178,6 +179,7 @@ export default function Home() {
 
   const goToPreviousStep = () => {
     if (currentIndex > 0) {
+      setSelectedTemplate(null);
       setCurrentStep([stepKeys[currentIndex - 1], -1]);
     }
   };
