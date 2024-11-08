@@ -54,12 +54,6 @@ const slideVariants = {
   })
 };
 
-const KeyboardTip = () => (
-  <p className="text-sm text-foreground/60 mt-2 italic">
-    Press <span className="font-medium">CMD + Enter</span> (or <span className="font-medium">CTRL + Enter</span>) to go to the next step
-  </p>
-);
-
 // Update the SavedItem and SavedItems types
 type SavedItem = {
   title: string;
@@ -318,8 +312,7 @@ export default function Home() {
                         {error}
                       </p>
                     )}
-                    <div className="flex items-center justify-between mt-2">
-                      <KeyboardTip />
+                    <div className="flex items-center justify-end mt-2">
                       <div className="flex">
                         {selectedTemplate ? (
                           <button
