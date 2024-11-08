@@ -91,6 +91,7 @@ export default function Home() {
   });
   const [isSaving, setIsSaving] = useState(false);
   const [saveTitle, setSaveTitle] = useState('');
+  const [selectedTemplate, setSelectedTemplate] = useState<SavedItem | null>(null);
 
   const stepKeys = Object.keys(steps) as Array<keyof typeof steps>;
   const currentIndex = stepKeys.indexOf(currentStep);
@@ -225,10 +226,30 @@ export default function Home() {
   };
 
   const selectSavedItem = (content: string) => {
+    const template = savedItems[currentStep].find(item => item.content === content);
+    setSelectedTemplate(template || null);
     setFormData(prev => ({
       ...prev,
       [currentStep]: content
     }));
+  };
+
+  const updateTemplate = () => {
+    if (!selectedTemplate) return;
+
+    const updatedItems = {
+      ...savedItems,
+      [currentStep]: savedItems[currentStep].map(item => 
+        item.title === selectedTemplate.title 
+          ? { ...item, content: formData[currentStep] }
+          : item
+      )
+    };
+
+    setSavedItems(updatedItems);
+    localStorage.setItem('costarSavedItems', JSON.stringify(updatedItems));
+    setSelectedTemplate(null);
+    setShowToast(true);
   };
 
   return (
@@ -268,9 +289,11 @@ export default function Home() {
                           border-black/[.08] dark:border-white/[.145]
                           focus:ring-2 focus:ring-foreground focus:outline-none"
                         onChange={(e) => selectSavedItem(e.target.value)}
-                        value=""
+                        value={selectedTemplate?.content || ""}
                       >
-                        <option value="" disabled>Select a saved {steps[currentStep].title.toLowerCase()}</option>
+                        <option value="" disabled>
+                          Select a saved {steps[currentStep].title.toLowerCase()}
+                        </option>
                         {savedItems[currentStep].map((item, index) => (
                           <option key={index} value={item.content}>
                             {item.title}
@@ -297,13 +320,28 @@ export default function Home() {
                     )}
                     <div className="flex items-center justify-between mt-2">
                       <KeyboardTip />
-                      <button
-                        className="button-secondary text-sm px-3 py-1"
-                        onClick={saveCurrentItem}
-                        disabled={!formData[currentStep].trim()}
-                      >
-                        Save for Later
-                      </button>
+                      <div className="flex">
+                        {selectedTemplate ? (
+                          <button
+                            className="button-secondary text-sm px-3 py-1 rounded-r-none border-r-0 
+                              bg-yellow-500/10 hover:bg-yellow-500/20"
+                            onClick={updateTemplate}
+                            disabled={!formData[currentStep].trim()}
+                          >
+                            Update Template
+                          </button>
+                        ) : null}
+                        <button
+                          className={`
+                            button-secondary text-sm px-3 py-1
+                            ${selectedTemplate ? 'rounded-l-none' : 'rounded-full'}
+                          `}
+                          onClick={saveCurrentItem}
+                          disabled={!formData[currentStep].trim()}
+                        >
+                          Save New Template
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -361,7 +399,11 @@ export default function Home() {
         duration={2000}
       >
         <Toast.Title>
-          {generatedPrompt ? 'Copied to clipboard!' : 'Saved successfully!'}
+          {generatedPrompt 
+            ? 'Copied to clipboard!' 
+            : selectedTemplate 
+              ? 'Template updated!' 
+              : 'Template saved!'}
         </Toast.Title>
       </Toast.Root>
       <Toast.Viewport />
