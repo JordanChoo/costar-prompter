@@ -54,6 +54,12 @@ const slideVariants = {
   })
 };
 
+const KeyboardTip = () => (
+  <p className="text-sm text-foreground/60 mt-2 italic">
+    Press <span className="font-medium">CMD + Enter</span> (or <span className="font-medium">CTRL + Enter</span>) to go to the next step
+  </p>
+);
+
 export default function Home() {
   const [[currentStep, direction], setCurrentStep] = useState<[keyof typeof steps, number]>(['context', 0]);
   const [formData, setFormData] = useState<Record<keyof typeof steps, string>>({
@@ -152,12 +158,15 @@ export default function Home() {
                   <p className="text-foreground/70">
                     {steps[currentStep].description}
                   </p>
-                  <textarea
-                    className="textarea-base min-h-[200px]"
-                    value={formData[currentStep]}
-                    onChange={(e) => handleInputChange(e.target.value)}
-                    placeholder={`Enter ${steps[currentStep].title.toLowerCase()}...`}
-                  />
+                  <div>
+                    <textarea
+                      className="textarea-base min-h-[200px]"
+                      value={formData[currentStep]}
+                      onChange={(e) => handleInputChange(e.target.value)}
+                      placeholder={`Enter ${steps[currentStep].title.toLowerCase()}...`}
+                    />
+                    <KeyboardTip />
+                  </div>
                 </div>
 
                 <div className="flex justify-between mt-4">
