@@ -9,4 +9,5 @@ format = "service-worker"
 node_version = "20.9.0"
 
 [site]
-bucket = ".vercel/output/static" 
+bucket = ".vercel/output/static"
+pages_build_output_dir = ".vercel/output/static"

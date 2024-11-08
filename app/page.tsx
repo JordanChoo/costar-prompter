@@ -4,12 +4,6 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import * as Toast from '@radix-ui/react-toast';
 
-type Step = {
-  key: keyof typeof steps;
-  title: string;
-  description: string;
-};
-
 const steps = {
   context: {
     title: 'Context',
@@ -141,7 +135,7 @@ export default function Home() {
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [currentStep, currentIndex, formData]);
+  }, [currentStep, currentIndex, formData, stepKeys, generatePrompt]);
 
   useEffect(() => {
     const textarea = document.querySelector('textarea');
