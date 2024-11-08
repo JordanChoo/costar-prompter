@@ -72,6 +72,7 @@ export default function Home() {
   });
   const [generatedPrompt, setGeneratedPrompt] = useState<string>('');
   const [showToast, setShowToast] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const stepKeys = Object.keys(steps) as Array<keyof typeof steps>;
   const currentIndex = stepKeys.indexOf(currentStep);
@@ -99,6 +100,7 @@ export default function Home() {
   }, [currentStep]);
 
   const handleInputChange = (value: string) => {
+    setError(null);
     setFormData(prev => ({
       ...prev,
       [currentStep]: value
@@ -106,6 +108,12 @@ export default function Home() {
   };
 
   const goToNextStep = () => {
+    if (!formData[currentStep].trim()) {
+      setError(`Please provide ${steps[currentStep].title.toLowerCase()} information`);
+      return;
+    }
+
+    setError(null);
     if (currentIndex < stepKeys.length - 1) {
       setCurrentStep([stepKeys[currentIndex + 1], 1]);
     } else {
@@ -172,12 +180,19 @@ export default function Home() {
                   </p>
                   <div>
                     <textarea
-                      className="textarea-base min-h-[200px]"
+                      className={`textarea-base min-h-[200px] ${
+                        error ? 'border-red-500 focus:ring-red-500' : ''
+                      }`}
                       value={formData[currentStep]}
                       onChange={(e) => handleInputChange(e.target.value)}
                       placeholder={`Enter ${steps[currentStep].title.toLowerCase()}...`}
                       autoFocus
                     />
+                    {error && (
+                      <p className="text-sm text-red-500 mt-2">
+                        {error}
+                      </p>
+                    )}
                     <KeyboardTip />
                   </div>
                 </div>
