@@ -840,7 +840,7 @@ export default function Home() {
       </div>
 
       <Toast.Root
-        className="bg-emerald-600 text-white rounded-lg p-4 fixed bottom-4 right-4 shadow-lg"
+        className="bg-emerald-600 text-white rounded-lg p-4 fixed bottom-4 right-4 shadow-lg z-[70]"
         open={showToast}
         onOpenChange={setShowToast}
         duration={2000}
@@ -859,7 +859,7 @@ export default function Home() {
                     : 'Template saved!'}
         </Toast.Title>
       </Toast.Root>
-      <Toast.Viewport />
+      <Toast.Viewport className="z-[70]" />
 
       {/* Save Dialog */}
       {isSaving && (
