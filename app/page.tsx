@@ -144,7 +144,7 @@ export default function Home() {
 
   return (
     <Toast.Provider swipeDirection="right">
-      <div className="min-h-screen p-8">
+      <div className="min-h-screen p-8 bg-[#fafafa] dark:bg-[#111]">
         <main className="max-w-2xl mx-auto space-y-8">
           <h1 className="text-2xl font-bold text-center">CO-STAR Prompt Builder</h1>
           
@@ -161,6 +161,7 @@ export default function Home() {
                   x: { type: "spring", stiffness: 300, damping: 30 },
                   opacity: { duration: 0.2 }
                 }}
+                className="bg-white dark:bg-black rounded-xl border border-black/[.08] dark:border-white/[.08] p-6 shadow-sm"
               >
                 <div className="space-y-4">
                   <h2 className="text-xl font-semibold">
@@ -199,7 +200,7 @@ export default function Home() {
               </motion.div>
             </AnimatePresence>
           ) : (
-            <div className="space-y-4">
+            <div className="bg-white dark:bg-black rounded-xl border border-black/[.08] dark:border-white/[.08] p-6 shadow-sm">
               <h2 className="text-xl font-semibold">Generated Prompt</h2>
               <pre className="p-4 rounded-lg bg-black/[.05] dark:bg-white/[.06] overflow-x-auto">
                 <code>{generatedPrompt}</code>
