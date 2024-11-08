@@ -216,23 +216,27 @@ export default function Home() {
             </AnimatePresence>
           ) : (
             <div className="bg-white dark:bg-black rounded-xl border border-black/[.08] dark:border-white/[.08] p-6 shadow-sm">
-              <h2 className="text-xl font-semibold">Generated Prompt</h2>
-              <pre className="p-4 rounded-lg bg-black/[.05] dark:bg-white/[.06] overflow-x-auto">
-                <code>{generatedPrompt}</code>
-              </pre>
-              <div className="flex gap-4">
-                <button
-                  className="button-secondary flex-1"
-                  onClick={() => setGeneratedPrompt('')}
-                >
-                  Start Over
-                </button>
-                <button
-                  className="flex-1 button-base bg-emerald-600 hover:bg-emerald-700 text-white"
-                  onClick={copyToClipboard}
-                >
-                  Copy to Clipboard
-                </button>
+              <div className="space-y-6">
+                <div className="space-y-4">
+                  <h2 className="text-xl font-semibold">Generated Prompt</h2>
+                  <pre className="p-4 rounded-lg bg-black/[.05] dark:bg-white/[.06] overflow-x-auto">
+                    <code>{generatedPrompt}</code>
+                  </pre>
+                </div>
+                <div className="flex gap-4">
+                  <button
+                    className="button-secondary flex-1"
+                    onClick={() => setGeneratedPrompt('')}
+                  >
+                    Start Over
+                  </button>
+                  <button
+                    className="flex-1 button-base bg-emerald-600 hover:bg-emerald-700 text-white"
+                    onClick={copyToClipboard}
+                  >
+                    Copy to Clipboard
+                  </button>
+                </div>
               </div>
             </div>
           )}
