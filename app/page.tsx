@@ -86,6 +86,9 @@ export default function Home() {
   const [isSaving, setIsSaving] = useState(false);
   const [saveTitle, setSaveTitle] = useState('');
   const [selectedTemplate, setSelectedTemplate] = useState<SavedItem | null>(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isHowToUseOpen, setIsHowToUseOpen] = useState(false);
 
   const stepKeys = Object.keys(steps) as Array<keyof typeof steps>;
   const currentIndex = stepKeys.indexOf(currentStep);
@@ -248,7 +251,169 @@ export default function Home() {
 
   return (
     <Toast.Provider swipeDirection="right">
-      <div className="min-h-screen p-8 bg-[#fafafa] dark:bg-[#111]">
+      <div className="min-h-screen p-8 bg-[#fafafa] dark:bg-[#111] relative">
+        {/* Menu Button */}
+        <button
+          className="fixed top-8 left-8 p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors"
+          onClick={() => setIsMenuOpen(true)}
+        >
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+
+        {/* Sidebar Menu */}
+        <AnimatePresence>
+          {isMenuOpen && (
+            <>
+              <motion.div
+                className="fixed inset-0 bg-black/50 z-40"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setIsMenuOpen(false)}
+              />
+              <motion.div
+                className="fixed left-0 top-0 bottom-0 w-64 bg-white dark:bg-black border-r border-black/[.08] dark:border-white/[.08] z-50"
+                initial={{ x: -320 }}
+                animate={{ x: 0 }}
+                exit={{ x: -320 }}
+                transition={{ type: "spring", damping: 30, stiffness: 300 }}
+              >
+                <div className="p-6 space-y-6">
+                  <button
+                    className="ml-auto block hover:text-foreground/70 transition-colors"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <line x1="18" y1="6" x2="6" y2="18"></line>
+                      <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                  </button>
+                  <nav className="space-y-2">
+                    <button
+                      className="w-full p-2 text-left rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Prompt Generator
+                    </button>
+                    <button
+                      className="w-full p-2 text-left rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                      onClick={() => {
+                        setIsSettingsOpen(true);
+                        setIsMenuOpen(false);
+                      }}
+                    >
+                      Settings
+                    </button>
+                    <button
+                      className="w-full p-2 text-left rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                      onClick={() => {
+                        setIsHowToUseOpen(true);
+                        setIsMenuOpen(false);
+                      }}
+                    >
+                      How To Use
+                    </button>
+                  </nav>
+                </div>
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>
+
+        {/* Settings Modal */}
+        {isSettingsOpen && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+            <div className="bg-white dark:bg-black rounded-xl p-6 max-w-md w-full space-y-4">
+              <div className="flex justify-between items-center">
+                <h3 className="text-lg font-semibold">Settings</h3>
+                <button
+                  className="hover:text-foreground/70 transition-colors"
+                  onClick={() => setIsSettingsOpen(false)}
+                >
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </button>
+              </div>
+              <p className="text-foreground/70">Settings coming soon...</p>
+            </div>
+          </div>
+        )}
+
+        {/* How To Use Modal */}
+        {isHowToUseOpen && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+            <div className="bg-white dark:bg-black rounded-xl p-6 max-w-md w-full space-y-4">
+              <div className="flex justify-between items-center">
+                <h3 className="text-lg font-semibold">How To Use</h3>
+                <button
+                  className="hover:text-foreground/70 transition-colors"
+                  onClick={() => setIsHowToUseOpen(false)}
+                >
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </button>
+              </div>
+              <div className="space-y-4 text-foreground/70">
+                <p>The CO-STAR framework helps you create structured prompts for AI models:</p>
+                <ul className="list-disc pl-4 space-y-2">
+                  <li><strong>Context:</strong> Provide background information</li>
+                  <li><strong>Objective:</strong> Define the task</li>
+                  <li><strong>Style:</strong> Specify the writing style</li>
+                  <li><strong>Tone:</strong> Set the response attitude</li>
+                  <li><strong>Audience:</strong> Identify the target audience</li>
+                  <li><strong>Response:</strong> Specify the output format</li>
+                </ul>
+                <p>You can save templates for reuse and generate XML-formatted prompts.</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Rest of your existing JSX */}
         <main className="max-w-2xl mx-auto space-y-8">
           <h1 className="text-2xl font-bold text-center">CO-STAR Prompt Builder</h1>
           
