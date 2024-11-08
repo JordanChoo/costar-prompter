@@ -87,6 +87,17 @@ export default function Home() {
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [currentIndex]);
 
+  useEffect(() => {
+    const textarea = document.querySelector('textarea');
+    if (textarea) {
+      const timeoutId = setTimeout(() => {
+        textarea.focus();
+      }, 100);
+      
+      return () => clearTimeout(timeoutId);
+    }
+  }, [currentStep]);
+
   const handleInputChange = (value: string) => {
     setFormData(prev => ({
       ...prev,
@@ -164,6 +175,7 @@ export default function Home() {
                       value={formData[currentStep]}
                       onChange={(e) => handleInputChange(e.target.value)}
                       placeholder={`Enter ${steps[currentStep].title.toLowerCase()}...`}
+                      autoFocus
                     />
                     <KeyboardTip />
                   </div>
