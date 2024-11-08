@@ -110,10 +110,18 @@ You can also deploy to [Cloudflare Pages](https://pages.cloudflare.com):
    - Framework preset: Next.js
    - Build command: `npm run pages:deploy`
    - Build output directory: `.vercel/output/static`
+   - Node.js version: 18.x
    - Environment variables: None required
 6. Deploy!
 
 For local development with Cloudflare:
+```bash
+# Install dependencies
+npm install
+
+# Start development server
+npm run pages:dev
+```
 
 ## Local Storage
 
