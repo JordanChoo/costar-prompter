@@ -60,6 +60,9 @@ const KeyboardTip = () => (
   </p>
 );
 
+// Add new type for saved items
+type SavedItems = Record<keyof typeof steps, string[]>;
+
 export default function Home() {
   const [[currentStep, direction], setCurrentStep] = useState<[keyof typeof steps, number]>(['context', 0]);
   const [formData, setFormData] = useState<Record<keyof typeof steps, string>>({
@@ -73,9 +76,25 @@ export default function Home() {
   const [generatedPrompt, setGeneratedPrompt] = useState<string>('');
   const [showToast, setShowToast] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [savedItems, setSavedItems] = useState<SavedItems>({
+    context: [],
+    objective: [],
+    style: [],
+    tone: [],
+    audience: [],
+    response: [],
+  });
 
   const stepKeys = Object.keys(steps) as Array<keyof typeof steps>;
   const currentIndex = stepKeys.indexOf(currentStep);
+
+  // Load saved items from localStorage on mount
+  useEffect(() => {
+    const savedData = localStorage.getItem('costarSavedItems');
+    if (savedData) {
+      setSavedItems(JSON.parse(savedData));
+    }
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -173,6 +192,27 @@ export default function Home() {
     setError(null);
   };
 
+  const saveCurrentItem = () => {
+    const currentValue = formData[currentStep].trim();
+    if (!currentValue) return;
+
+    const updatedItems = {
+      ...savedItems,
+      [currentStep]: [...new Set([...savedItems[currentStep], currentValue])]
+    };
+    
+    setSavedItems(updatedItems);
+    localStorage.setItem('costarSavedItems', JSON.stringify(updatedItems));
+    setShowToast(true);
+  };
+
+  const selectSavedItem = (value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [currentStep]: value
+    }));
+  };
+
   return (
     <Toast.Provider swipeDirection="right">
       <div className="min-h-screen p-8 bg-[#fafafa] dark:bg-[#111]">
@@ -201,6 +241,27 @@ export default function Home() {
                   <p className="text-foreground/70">
                     {steps[currentStep].description}
                   </p>
+                  
+                  {/* Saved items dropdown */}
+                  {savedItems[currentStep].length > 0 && (
+                    <div className="relative">
+                      <select
+                        className="w-full p-2 rounded-lg border bg-background 
+                          border-black/[.08] dark:border-white/[.145]
+                          focus:ring-2 focus:ring-foreground focus:outline-none"
+                        onChange={(e) => selectSavedItem(e.target.value)}
+                        value=""
+                      >
+                        <option value="" disabled>Select a saved {steps[currentStep].title.toLowerCase()}</option>
+                        {savedItems[currentStep].map((item, index) => (
+                          <option key={index} value={item}>
+                            {item.length > 50 ? `${item.slice(0, 50)}...` : item}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
+                  
                   <div>
                     <textarea
                       className={`textarea-base min-h-[200px] ${
@@ -216,7 +277,16 @@ export default function Home() {
                         {error}
                       </p>
                     )}
-                    <KeyboardTip />
+                    <div className="flex items-center justify-between mt-2">
+                      <KeyboardTip />
+                      <button
+                        className="button-secondary text-sm px-3 py-1"
+                        onClick={saveCurrentItem}
+                        disabled={!formData[currentStep].trim()}
+                      >
+                        Save for Later
+                      </button>
+                    </div>
                   </div>
                 </div>
 
@@ -272,7 +342,9 @@ export default function Home() {
         onOpenChange={setShowToast}
         duration={2000}
       >
-        <Toast.Title>Copied to clipboard!</Toast.Title>
+        <Toast.Title>
+          {generatedPrompt ? 'Copied to clipboard!' : 'Saved successfully!'}
+        </Toast.Title>
       </Toast.Root>
       <Toast.Viewport />
     </Toast.Provider>
