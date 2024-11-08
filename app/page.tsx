@@ -159,6 +159,20 @@ export default function Home() {
     }
   };
 
+  const resetForm = () => {
+    setGeneratedPrompt('');
+    setCurrentStep(['context', 0]);
+    setFormData({
+      context: '',
+      objective: '',
+      style: '',
+      tone: '',
+      audience: '',
+      response: '',
+    });
+    setError(null);
+  };
+
   return (
     <Toast.Provider swipeDirection="right">
       <div className="min-h-screen p-8 bg-[#fafafa] dark:bg-[#111]">
@@ -235,7 +249,7 @@ export default function Home() {
                 <div className="flex gap-4">
                   <button
                     className="button-secondary flex-1"
-                    onClick={() => setGeneratedPrompt('')}
+                    onClick={resetForm}
                   >
                     Start Over
                   </button>
