@@ -89,6 +89,8 @@ export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isHowToUseOpen, setIsHowToUseOpen] = useState(false);
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
+  const [deleteConfirmText, setDeleteConfirmText] = useState('');
 
   const stepKeys = Object.keys(steps) as Array<keyof typeof steps>;
   const currentIndex = stepKeys.indexOf(currentStep);
@@ -249,6 +251,23 @@ export default function Home() {
     setShowToast(true);
   };
 
+  const handleDeleteAllData = () => {
+    if (deleteConfirmText === 'DELETE') {
+      localStorage.removeItem('costarSavedItems');
+      setSavedItems({
+        context: [],
+        objective: [],
+        style: [],
+        tone: [],
+        audience: [],
+        response: [],
+      });
+      setIsDeleteConfirmOpen(false);
+      setIsSettingsOpen(false);
+      setShowToast(true);
+    }
+  };
+
   return (
     <Toast.Provider swipeDirection="right">
       <div className="min-h-screen p-8 bg-[#fafafa] dark:bg-[#111] relative">
@@ -367,7 +386,17 @@ export default function Home() {
                   </svg>
                 </button>
               </div>
-              <p className="text-foreground/70">Settings coming soon...</p>
+              <div className="space-y-4 pt-4">
+                <div className="border-t border-black/[.08] dark:border-white/[.08] pt-4">
+                  <h4 className="text-sm font-medium mb-2">Danger Zone</h4>
+                  <button
+                    className="w-full px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors"
+                    onClick={() => setIsDeleteConfirmOpen(true)}
+                  >
+                    Delete All Data
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         )}
@@ -408,6 +437,73 @@ export default function Home() {
                   <li><strong>Response:</strong> Specify the output format</li>
                 </ul>
                 <p>You can save templates for reuse and generate XML-formatted prompts.</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Delete Confirmation Modal */}
+        {isDeleteConfirmOpen && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-[60]">
+            <div className="bg-white dark:bg-black rounded-xl p-6 max-w-md w-full space-y-4">
+              <div className="flex justify-between items-center">
+                <h3 className="text-lg font-semibold text-red-500">Delete All Data</h3>
+                <button
+                  className="hover:text-foreground/70 transition-colors"
+                  onClick={() => {
+                    setIsDeleteConfirmOpen(false);
+                    setDeleteConfirmText('');
+                  }}
+                >
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </button>
+              </div>
+              <div className="space-y-4">
+                <p className="text-foreground/70">
+                  This action will permanently delete all your saved templates. 
+                  To confirm, please type <span className="font-mono font-bold">DELETE</span> below:
+                </p>
+                <input
+                  type="text"
+                  className="w-full p-2 rounded-lg border bg-background 
+                    border-black/[.08] dark:border-white/[.145]
+                    focus:ring-2 focus:ring-red-500 focus:outline-none"
+                  value={deleteConfirmText}
+                  onChange={(e) => setDeleteConfirmText(e.target.value)}
+                  placeholder="Type DELETE to confirm"
+                  autoFocus
+                />
+                <div className="flex gap-2 justify-end">
+                  <button
+                    className="button-secondary"
+                    onClick={() => {
+                      setIsDeleteConfirmOpen(false);
+                      setDeleteConfirmText('');
+                    }}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    className="px-4 py-2 bg-red-500 hover:bg-red-600 disabled:opacity-50 
+                      disabled:hover:bg-red-500 text-white rounded-full transition-colors"
+                    onClick={handleDeleteAllData}
+                    disabled={deleteConfirmText !== 'DELETE'}
+                  >
+                    Delete All Data
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -559,9 +655,11 @@ export default function Home() {
         <Toast.Title>
           {generatedPrompt 
             ? 'Copied to clipboard!' 
-            : selectedTemplate 
-              ? 'Template updated!' 
-              : 'Template saved!'}
+            : deleteConfirmText === 'DELETE'
+              ? 'All data deleted!'
+              : selectedTemplate 
+                ? 'Template updated!' 
+                : 'Template saved!'}
         </Toast.Title>
       </Toast.Root>
       <Toast.Viewport />
