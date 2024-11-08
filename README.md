@@ -91,6 +91,7 @@ pnpm start
 
 ## Deployment
 
+### Vercel (Recommended)
 The easiest way to deploy is using the [Vercel Platform](https://vercel.com):
 
 1. Push your code to a Git repository
@@ -98,10 +99,21 @@ The easiest way to deploy is using the [Vercel Platform](https://vercel.com):
 3. Vercel will automatically detect Next.js and configure the build settings
 4. Your app will be deployed to a production URL
 
-For other platforms, ensure they support:
-- Node.js 18.17 or later
-- Next.js 15
-- Environment variables (if added later)
+### Cloudflare Pages
+You can also deploy to [Cloudflare Pages](https://pages.cloudflare.com):
+
+1. Push your code to a Git repository (GitHub, GitLab)
+2. Log in to the Cloudflare dashboard
+3. Go to Pages > Create a project
+4. Connect your repository
+5. Configure your build settings:
+   - Framework preset: Next.js
+   - Build command: `npm run pages:deploy`
+   - Build output directory: `.vercel/output/static`
+   - Environment variables: None required
+6. Deploy!
+
+For local development with Cloudflare:
 
 ## Local Storage
 
