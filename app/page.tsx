@@ -62,6 +62,13 @@ type SavedItem = {
 
 type SavedItems = Record<keyof typeof steps, SavedItem[]>;
 
+// Add new type for saved prompts
+type SavedPrompt = {
+  title: string;
+  prompt: string;
+  date: string;
+};
+
 export default function Home() {
   const [[currentStep, direction], setCurrentStep] = useState<[keyof typeof steps, number]>(['context', 0]);
   const [formData, setFormData] = useState<Record<keyof typeof steps, string>>({
@@ -91,6 +98,11 @@ export default function Home() {
   const [isHowToUseOpen, setIsHowToUseOpen] = useState(false);
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const [deleteConfirmText, setDeleteConfirmText] = useState('');
+  const [savedPrompts, setSavedPrompts] = useState<SavedPrompt[]>([]);
+  const [isSavingPrompt, setIsSavingPrompt] = useState(false);
+  const [promptTitle, setPromptTitle] = useState('');
+  const [isSavedPromptsOpen, setIsSavedPromptsOpen] = useState(false);
+  const [expandedPromptId, setExpandedPromptId] = useState<number | null>(null);
 
   const stepKeys = Object.keys(steps) as Array<keyof typeof steps>;
   const currentIndex = stepKeys.indexOf(currentStep);
@@ -100,6 +112,14 @@ export default function Home() {
     const savedData = localStorage.getItem('costarSavedItems');
     if (savedData) {
       setSavedItems(JSON.parse(savedData));
+    }
+  }, []);
+
+  // Load saved prompts on mount
+  useEffect(() => {
+    const savedPromptsData = localStorage.getItem('costarSavedPrompts');
+    if (savedPromptsData) {
+      setSavedPrompts(JSON.parse(savedPromptsData));
     }
   }, []);
 
@@ -268,6 +288,28 @@ export default function Home() {
     }
   };
 
+  // Add save prompt function
+  const handleSavePrompt = () => {
+    setIsSavingPrompt(true);
+  };
+
+  const handleSavePromptConfirm = () => {
+    if (!promptTitle.trim()) return;
+
+    const newPrompt: SavedPrompt = {
+      title: promptTitle.trim(),
+      prompt: generatedPrompt,
+      date: new Date().toISOString(),
+    };
+
+    const updatedPrompts = [...savedPrompts, newPrompt];
+    setSavedPrompts(updatedPrompts);
+    localStorage.setItem('costarSavedPrompts', JSON.stringify(updatedPrompts));
+    setShowToast(true);
+    setIsSavingPrompt(false);
+    setPromptTitle('');
+  };
+
   return (
     <Toast.Provider swipeDirection="right">
       <div className="min-h-screen p-8 bg-[#fafafa] dark:bg-[#111] relative">
@@ -339,6 +381,15 @@ export default function Home() {
                     <button
                       className="w-full p-2 text-left rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
                       onClick={() => {
+                        setIsSavedPromptsOpen(true);
+                        setIsMenuOpen(false);
+                      }}
+                    >
+                      Saved Prompts
+                    </button>
+                    <button
+                      className="w-full p-2 text-left rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                      onClick={() => {
                         setIsSettingsOpen(true);
                         setIsMenuOpen(false);
                       }}
@@ -360,6 +411,108 @@ export default function Home() {
             </>
           )}
         </AnimatePresence>
+
+        {/* Add Saved Prompts Modal */}
+        {isSavedPromptsOpen && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+            <div className="bg-white dark:bg-black rounded-xl p-6 max-w-2xl w-full space-y-4 max-h-[80vh] flex flex-col">
+              <div className="flex justify-between items-center">
+                <h3 className="text-lg font-semibold">Saved Prompts</h3>
+                <button
+                  className="hover:text-foreground/70 transition-colors"
+                  onClick={() => setIsSavedPromptsOpen(false)}
+                >
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </button>
+              </div>
+              <div className="overflow-y-auto flex-1">
+                {savedPrompts.length === 0 ? (
+                  <p className="text-foreground/70 text-center py-8">
+                    No saved prompts yet
+                  </p>
+                ) : (
+                  <div className="space-y-2">
+                    {savedPrompts.map((prompt, index) => (
+                      <div
+                        key={index}
+                        className="border border-black/[.08] dark:border-white/[.08] rounded-lg overflow-hidden"
+                      >
+                        <button
+                          className="w-full p-4 flex justify-between items-center hover:bg-black/[.02] dark:hover:bg-white/[.02] transition-colors"
+                          onClick={() => setExpandedPromptId(expandedPromptId === index ? null : index)}
+                        >
+                          <h4 className="font-medium">{prompt.title}</h4>
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm text-foreground/50">
+                              {new Date(prompt.date).toLocaleDateString()}
+                            </span>
+                            <svg
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              className={`transform transition-transform ${
+                                expandedPromptId === index ? 'rotate-180' : ''
+                              }`}
+                            >
+                              <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                          </div>
+                        </button>
+                        
+                        <AnimatePresence>
+                          {expandedPromptId === index && (
+                            <motion.div
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: 'auto', opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }}
+                              transition={{ duration: 0.2 }}
+                              className="border-t border-black/[.08] dark:border-white/[.08]"
+                            >
+                              <div className="p-4 space-y-4">
+                                <pre className="text-sm bg-black/[.05] dark:bg-white/[.06] p-2 rounded overflow-x-auto">
+                                  <code>{prompt.prompt}</code>
+                                </pre>
+                                <div className="flex justify-end">
+                                  <button
+                                    className="text-sm text-foreground/70 hover:text-foreground transition-colors"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      navigator.clipboard.writeText(prompt.prompt);
+                                      setShowToast(true);
+                                    }}
+                                  >
+                                    Copy to Clipboard
+                                  </button>
+                                </div>
+                              </div>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Settings Modal */}
         {isSettingsOpen && (
@@ -661,9 +814,9 @@ export default function Home() {
                   </button>
                   <button
                     className="flex-1 button-base bg-emerald-600 hover:bg-emerald-700 text-white"
-                    onClick={copyToClipboard}
+                    onClick={handleSavePrompt}
                   >
-                    Copy to Clipboard
+                    Save Prompt
                   </button>
                 </div>
               </div>
@@ -679,13 +832,17 @@ export default function Home() {
         duration={2000}
       >
         <Toast.Title>
-          {generatedPrompt 
-            ? 'Copied to clipboard!' 
-            : deleteConfirmText === 'DELETE'
-              ? 'All data deleted!'
-              : selectedTemplate 
-                ? 'Template updated!' 
-                : 'Template saved!'}
+          {isSavingPrompt 
+            ? 'Prompt saved successfully!'
+            : generatedPrompt && !isSavedPromptsOpen
+              ? 'Copied to clipboard!' 
+              : isSavedPromptsOpen
+                ? 'Prompt copied to clipboard!'
+                : deleteConfirmText === 'DELETE'
+                  ? 'All data deleted!'
+                  : selectedTemplate 
+                    ? 'Template updated!' 
+                    : 'Template saved!'}
         </Toast.Title>
       </Toast.Root>
       <Toast.Viewport />
@@ -725,6 +882,49 @@ export default function Home() {
                 className="button-primary"
                 onClick={handleSaveConfirm}
                 disabled={!saveTitle.trim()}
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add Save Prompt Dialog */}
+      {isSavingPrompt && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white dark:bg-black rounded-xl p-6 max-w-md w-full space-y-4">
+            <h3 className="text-lg font-semibold">Save Prompt</h3>
+            <div className="space-y-2">
+              <label htmlFor="promptTitle" className="text-sm text-foreground/70">
+                Give this prompt a title
+              </label>
+              <input
+                id="promptTitle"
+                type="text"
+                className="w-full p-2 rounded-lg border bg-background 
+                  border-black/[.08] dark:border-white/[.145]
+                  focus:ring-2 focus:ring-foreground focus:outline-none"
+                value={promptTitle}
+                onChange={(e) => setPromptTitle(e.target.value)}
+                placeholder="e.g., My Custom Prompt"
+                autoFocus
+              />
+            </div>
+            <div className="flex gap-2 justify-end">
+              <button
+                className="button-secondary"
+                onClick={() => {
+                  setIsSavingPrompt(false);
+                  setPromptTitle('');
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                className="button-primary"
+                onClick={handleSavePromptConfirm}
+                disabled={!promptTitle.trim()}
               >
                 Save
               </button>
