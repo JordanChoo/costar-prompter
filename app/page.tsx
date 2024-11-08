@@ -60,8 +60,13 @@ const KeyboardTip = () => (
   </p>
 );
 
-// Add new type for saved items
-type SavedItems = Record<keyof typeof steps, string[]>;
+// Update the SavedItem and SavedItems types
+type SavedItem = {
+  title: string;
+  content: string;
+};
+
+type SavedItems = Record<keyof typeof steps, SavedItem[]>;
 
 export default function Home() {
   const [[currentStep, direction], setCurrentStep] = useState<[keyof typeof steps, number]>(['context', 0]);
@@ -196,9 +201,14 @@ export default function Home() {
     const currentValue = formData[currentStep].trim();
     if (!currentValue) return;
 
+    const newItem: SavedItem = {
+      title: currentValue.slice(0, 50) + (currentValue.length > 50 ? '...' : ''),
+      content: currentValue
+    };
+
     const updatedItems = {
       ...savedItems,
-      [currentStep]: [...new Set([...savedItems[currentStep], currentValue])]
+      [currentStep]: [...savedItems[currentStep], newItem]
     };
     
     setSavedItems(updatedItems);
@@ -206,10 +216,10 @@ export default function Home() {
     setShowToast(true);
   };
 
-  const selectSavedItem = (value: string) => {
+  const selectSavedItem = (content: string) => {
     setFormData(prev => ({
       ...prev,
-      [currentStep]: value
+      [currentStep]: content
     }));
   };
 
@@ -254,8 +264,8 @@ export default function Home() {
                       >
                         <option value="" disabled>Select a saved {steps[currentStep].title.toLowerCase()}</option>
                         {savedItems[currentStep].map((item, index) => (
-                          <option key={index} value={item}>
-                            {item.length > 50 ? `${item.slice(0, 50)}...` : item}
+                          <option key={index} value={item.content}>
+                            {item.title}
                           </option>
                         ))}
                       </select>
