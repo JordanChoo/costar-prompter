@@ -867,14 +867,18 @@ export default function Home() {
       </div>
 
       <Toast.Root
-        className="bg-emerald-600 text-white rounded-lg p-4 fixed bottom-4 right-4 shadow-lg z-[70]"
+        className={`${
+          deleteConfirmText === 'DELETE' 
+            ? 'bg-red-500' 
+            : 'bg-emerald-600'
+        } text-white rounded-lg p-4 fixed bottom-4 right-4 shadow-lg z-[70]`}
         open={showToast}
         onOpenChange={setShowToast}
         duration={2000}
       >
         <Toast.Title>
           {isSavingPrompt 
-            ? 'Prompt saved successfully!'
+            ? 'Prompt saved!'
             : generatedPrompt && !isSavedPromptsOpen
               ? 'Copied to clipboard!' 
               : isSavedPromptsOpen
@@ -882,8 +886,8 @@ export default function Home() {
                 : deleteConfirmText === 'DELETE'
                   ? 'All data deleted!'
                   : selectedTemplate 
-                    ? 'Template updated!' 
-                    : 'Template saved!'}
+                    ? `${steps[currentStep].title} template saved!`
+                    : `${steps[currentStep].title} template updated!`}
         </Toast.Title>
       </Toast.Root>
       <Toast.Viewport className="z-[70]" />
