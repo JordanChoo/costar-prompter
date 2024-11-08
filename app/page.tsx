@@ -89,6 +89,8 @@ export default function Home() {
     audience: [],
     response: [],
   });
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveTitle, setSaveTitle] = useState('');
 
   const stepKeys = Object.keys(steps) as Array<keyof typeof steps>;
   const currentIndex = stepKeys.indexOf(currentStep);
@@ -198,12 +200,16 @@ export default function Home() {
   };
 
   const saveCurrentItem = () => {
+    setIsSaving(true);
+  };
+
+  const handleSaveConfirm = () => {
     const currentValue = formData[currentStep].trim();
-    if (!currentValue) return;
+    if (!currentValue || !saveTitle.trim()) return;
 
     const newItem: SavedItem = {
-      title: currentValue.slice(0, 50) + (currentValue.length > 50 ? '...' : ''),
-      content: currentValue
+      title: saveTitle.trim(),
+      content: currentValue,
     };
 
     const updatedItems = {
@@ -214,6 +220,8 @@ export default function Home() {
     setSavedItems(updatedItems);
     localStorage.setItem('costarSavedItems', JSON.stringify(updatedItems));
     setShowToast(true);
+    setIsSaving(false);
+    setSaveTitle('');
   };
 
   const selectSavedItem = (content: string) => {
@@ -357,6 +365,49 @@ export default function Home() {
         </Toast.Title>
       </Toast.Root>
       <Toast.Viewport />
+
+      {/* Save Dialog */}
+      {isSaving && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white dark:bg-black rounded-xl p-6 max-w-md w-full space-y-4">
+            <h3 className="text-lg font-semibold">Save {steps[currentStep].title}</h3>
+            <div className="space-y-2">
+              <label htmlFor="saveTitle" className="text-sm text-foreground/70">
+                Give this {steps[currentStep].title.toLowerCase()} a title
+              </label>
+              <input
+                id="saveTitle"
+                type="text"
+                className="w-full p-2 rounded-lg border bg-background 
+                  border-black/[.08] dark:border-white/[.145]
+                  focus:ring-2 focus:ring-foreground focus:outline-none"
+                value={saveTitle}
+                onChange={(e) => setSaveTitle(e.target.value)}
+                placeholder={`e.g., "My ${steps[currentStep].title}"`}
+                autoFocus
+              />
+            </div>
+            <div className="flex gap-2 justify-end">
+              <button
+                className="button-secondary"
+                onClick={() => {
+                  setIsSaving(false);
+                  setSaveTitle('');
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                className="button-primary"
+                onClick={handleSaveConfirm}
+                disabled={!saveTitle.trim()}
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </Toast.Provider>
   );
 }
