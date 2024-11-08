@@ -414,8 +414,14 @@ export default function Home() {
 
         {/* Add Saved Prompts Modal */}
         {isSavedPromptsOpen && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white dark:bg-black rounded-xl p-6 max-w-2xl w-full space-y-4 max-h-[80vh] flex flex-col">
+          <div 
+            className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
+            onClick={() => setIsSavedPromptsOpen(false)}
+          >
+            <div 
+              className="bg-white dark:bg-black rounded-xl p-6 max-w-2xl w-full space-y-4 max-h-[80vh] flex flex-col"
+              onClick={e => e.stopPropagation()}
+            >
               <div className="flex justify-between items-center">
                 <h3 className="text-lg font-semibold">Saved Prompts</h3>
                 <button
@@ -530,8 +536,14 @@ export default function Home() {
 
         {/* Settings Modal */}
         {isSettingsOpen && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white dark:bg-black rounded-xl p-6 max-w-md w-full space-y-4">
+          <div 
+            className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
+            onClick={() => setIsSettingsOpen(false)}
+          >
+            <div 
+              className="bg-white dark:bg-black rounded-xl p-6 max-w-md w-full space-y-4"
+              onClick={e => e.stopPropagation()}
+            >
               <div className="flex justify-between items-center">
                 <h3 className="text-lg font-semibold">Settings</h3>
                 <button
@@ -574,8 +586,14 @@ export default function Home() {
 
         {/* How To Use Modal */}
         {isHowToUseOpen && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white dark:bg-black rounded-xl p-6 max-w-md w-full space-y-4">
+          <div 
+            className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
+            onClick={() => setIsHowToUseOpen(false)}
+          >
+            <div 
+              className="bg-white dark:bg-black rounded-xl p-6 max-w-md w-full space-y-4"
+              onClick={e => e.stopPropagation()}
+            >
               <div className="flex justify-between items-center">
                 <h3 className="text-lg font-semibold">How To Use</h3>
                 <button
@@ -615,8 +633,17 @@ export default function Home() {
 
         {/* Delete Confirmation Modal */}
         {isDeleteConfirmOpen && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-[60]">
-            <div className="bg-white dark:bg-black rounded-xl p-6 max-w-md w-full space-y-4">
+          <div 
+            className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-[60]"
+            onClick={() => {
+              setIsDeleteConfirmOpen(false);
+              setDeleteConfirmText('');
+            }}
+          >
+            <div 
+              className="bg-white dark:bg-black rounded-xl p-6 max-w-md w-full space-y-4"
+              onClick={e => e.stopPropagation()}
+            >
               <div className="flex justify-between items-center">
                 <h3 className="text-lg font-semibold text-red-500">Delete All Data</h3>
                 <button
@@ -863,8 +890,17 @@ export default function Home() {
 
       {/* Save Dialog */}
       {isSaving && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white dark:bg-black rounded-xl p-6 max-w-md w-full space-y-4">
+        <div 
+          className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
+          onClick={() => {
+            setIsSaving(false);
+            setSaveTitle('');
+          }}
+        >
+          <div 
+            className="bg-white dark:bg-black rounded-xl p-6 max-w-md w-full space-y-4"
+            onClick={e => e.stopPropagation()}
+          >
             <h3 className="text-lg font-semibold">Save {steps[currentStep].title}</h3>
             <div className="space-y-2">
               <label htmlFor="saveTitle" className="text-sm text-foreground/70">
@@ -906,8 +942,17 @@ export default function Home() {
 
       {/* Add Save Prompt Dialog */}
       {isSavingPrompt && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white dark:bg-black rounded-xl p-6 max-w-md w-full space-y-4">
+        <div 
+          className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
+          onClick={() => {
+            setIsSavingPrompt(false);
+            setPromptTitle('');
+          }}
+        >
+          <div 
+            className="bg-white dark:bg-black rounded-xl p-6 max-w-md w-full space-y-4"
+            onClick={e => e.stopPropagation()}
+          >
             <h3 className="text-lg font-semibold">Save Prompt</h3>
             <div className="space-y-2">
               <label htmlFor="promptTitle" className="text-sm text-foreground/70">
