@@ -92,16 +92,18 @@ pnpm start
 ## Deployment
 
 ### Replit (Recommended)
-The easiest way to deploy is using [Replit](https://replit.com) via GitHub:
+The easiest way to deploy as a static site is using [Replit](https://replit.com):
 
 1. Go to [Replit](https://replit.com) and log in or create an account.
 2. Click on the "Create" button and select "Import from GitHub."
 3. Enter the URL of your GitHub repository and click "Import."
 4. Once the project is imported, ensure that your `package.json` file includes the necessary scripts:
+   - `"build": "next build"`
    - `"start": "next start"`
 5. Set the environment variable `PORT` to `3000` in the Replit settings.
-6. Click the "Run" button to start your application.
-7. Your app will be accessible via the URL provided by Replit.
+6. In the Replit settings, enable the "Static Site" option.
+7. Click the "Run" button to start your application.
+8. Your app will be accessible via the URL provided by Replit.
 
 ## Local Storage
 
