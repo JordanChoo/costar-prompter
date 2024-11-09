@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import * as Toast from '@radix-ui/react-toast';
 
@@ -117,6 +117,21 @@ export default function Home() {
     }
   }, []);
 
+  // Wrap generatePrompt in useCallback
+  const generatePrompt = useCallback(() => {
+    const xmlPrompt = `
+<prompt>
+  <context>${formData.context}</context>
+  <objective>${formData.objective}</objective>
+  <style>${formData.style}</style>
+  <tone>${formData.tone}</tone>
+  <audience>${formData.audience}</audience>
+  <response>${formData.response}</response>
+</prompt>`.trim();
+    
+    setGeneratedPrompt(xmlPrompt);
+  }, [formData]); // Added formData as a dependency
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
@@ -176,20 +191,6 @@ export default function Home() {
       setSelectedTemplate(null);
       setCurrentStep([stepKeys[currentIndex - 1], -1]);
     }
-  };
-
-  const generatePrompt = () => {
-    const xmlPrompt = `
-<prompt>
-  <context>${formData.context}</context>
-  <objective>${formData.objective}</objective>
-  <style>${formData.style}</style>
-  <tone>${formData.tone}</tone>
-  <audience>${formData.audience}</audience>
-  <response>${formData.response}</response>
-</prompt>`.trim();
-    
-    setGeneratedPrompt(xmlPrompt);
   };
 
   const copyToClipboard = async () => {
