@@ -867,6 +867,16 @@ export default function Home() {
             </div>
           )}
         </main>
+
+        {/* Add the attribution link */}
+        <a
+          href="https://jordanchoo.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="fixed bottom-4 right-4 text-sm text-foreground/70 hover:text-foreground transition-colors"
+        >
+          ⚡Built by Jordan Choo
+        </a>
       </div>
 
       <Toast.Root

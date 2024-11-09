@@ -16,6 +16,10 @@ const geistMono = localFont({
 export const metadata: Metadata = {
   title: "CO-STAR Prompt Builder",
   description: "Build structured prompts using the CO-STAR framework",
+  metadataBase: new URL('https://costar.jordanchoo.com'),
+  alternates: {
+    canonical: '/'
+  }
 };
 
 export default function RootLayout({
@@ -25,6 +29,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link 
+          rel="canonical" 
+          href="https://costar.jordanchoo.com/" 
+          key="canonical" 
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
