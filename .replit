@@ -5,10 +5,10 @@ run = "npm run dev"
 channel = "stable-24_05"
 
 [deployment]
-build = ["sh", "-c", "next build"]
+build = ["sh", "-c", "npm run build"]
 deploymentTarget = "static"
-publicDir = "public"
+publicDir = "out"
 
 [[ports]]
 localPort = 3000
-externalPort = 80 
+externalPort = 80

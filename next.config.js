@@ -4,6 +4,7 @@ const nextConfig = {
   images: {
     unoptimized: true, // Required for static export
   },
+  distDir: 'out', // Specify the output directory
 }
 
 module.exports = nextConfig 
