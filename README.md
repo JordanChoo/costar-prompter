@@ -91,37 +91,17 @@ pnpm start
 
 ## Deployment
 
-### Vercel (Recommended)
-The easiest way to deploy is using the [Vercel Platform](https://vercel.com):
+### Replit (Recommended)
+The easiest way to deploy is using [Replit](https://replit.com) via GitHub:
 
-1. Push your code to a Git repository
-2. Import your repository to Vercel
-3. Vercel will automatically detect Next.js and configure the build settings
-4. Your app will be deployed to a production URL
-
-### Cloudflare Pages
-You can also deploy to [Cloudflare Pages](https://pages.cloudflare.com):
-
-1. Push your code to a Git repository (GitHub, GitLab)
-2. Log in to the Cloudflare dashboard
-3. Go to Pages > Create a project
-4. Connect your repository
-5. Configure your build settings:
-   - Framework preset: Next.js
-   - Build command: `npm run pages:deploy`
-   - Build output directory: `.vercel/output/static`
-   - Node.js version: 20.x
-   - Environment variables: None required
-6. Deploy!
-
-For local development with Cloudflare:
-```bash
-# Install dependencies
-npm install
-
-# Start development server
-npm run pages:dev
-```
+1. Go to [Replit](https://replit.com) and log in or create an account.
+2. Click on the "Create" button and select "Import from GitHub."
+3. Enter the URL of your GitHub repository and click "Import."
+4. Once the project is imported, ensure that your `package.json` file includes the necessary scripts:
+   - `"start": "next start"`
+5. Set the environment variable `PORT` to `3000` in the Replit settings.
+6. Click the "Run" button to start your application.
+7. Your app will be accessible via the URL provided by Replit.
 
 ## Local Storage
 
