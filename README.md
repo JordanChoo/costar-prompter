@@ -98,8 +98,7 @@ The easiest way to deploy as a static site is using [Replit](https://replit.com)
 2. Click on the "Create" button and select "Import from GitHub."
 3. Enter the URL of your GitHub repository and click "Import."
 4. Once the project is imported, ensure that your `package.json` file includes the necessary scripts:
-   - `"build": "next build"`
-   - `"start": "next start"`
+   - `"build": "next build && next export"`
 5. Set the environment variable `PORT` to `3000` in the Replit settings.
 6. In the Replit settings, enable the "Static Site" option.
 7. Click the "Run" button to start your application.
