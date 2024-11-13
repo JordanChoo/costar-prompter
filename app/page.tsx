@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import * as Toast from '@radix-ui/react-toast';
+import * as Dialog from '@radix-ui/react-dialog';
 
 const steps = {
   context: {
@@ -29,6 +30,15 @@ const steps = {
     title: 'Response',
     description: 'Provide the response format',
   },
+} as const;
+
+const examples = {
+  context: "I'm working on a marketing campaign for a new eco-friendly water bottle.",
+  objective: "Write a compelling product description that highlights the environmental benefits.",
+  style: "Write like an environmental activist with marketing expertise.",
+  tone: "Passionate and inspiring, but professional.",
+  audience: "Environmentally conscious millennials who are active on social media.",
+  response: "A 3-paragraph product description suitable for an e-commerce website."
 } as const;
 
 const slideVariants = {
@@ -97,6 +107,7 @@ export default function Home() {
   const [promptTitle, setPromptTitle] = useState('');
   const [isSavedPromptsOpen, setIsSavedPromptsOpen] = useState(false);
   const [expandedPromptId, setExpandedPromptId] = useState<number | null>(null);
+  const [isFirstVisit, setIsFirstVisit] = useState(true);
 
   const stepKeys = Object.keys(steps) as Array<keyof typeof steps>;
   const currentIndex = stepKeys.indexOf(currentStep);
@@ -114,6 +125,17 @@ export default function Home() {
     const savedPromptsData = localStorage.getItem('costarSavedPrompts');
     if (savedPromptsData) {
       setSavedPrompts(JSON.parse(savedPromptsData));
+    }
+  }, []);
+
+  // Add this useEffect near the other localStorage effects
+  useEffect(() => {
+    const hasVisited = localStorage.getItem('costarHasVisited');
+    if (!hasVisited) {
+      setIsFirstVisit(true);
+      localStorage.setItem('costarHasVisited', 'true');
+    } else {
+      setIsFirstVisit(false);
     }
   }, []);
 
@@ -313,8 +335,66 @@ export default function Home() {
     setPromptTitle('');
   };
 
+  const handleCloseFirstVisit = () => {
+    setIsFirstVisit(false);
+  };
+
   return (
     <Toast.Provider swipeDirection="right">
+      <Dialog.Root open={isFirstVisit} onOpenChange={handleCloseFirstVisit}>
+        <Dialog.Portal>
+          <Dialog.Overlay className="fixed inset-0 bg-black/50 z-50" />
+          <Dialog.Content className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-black rounded-xl p-6 max-w-2xl w-[95%] max-h-[90vh] overflow-y-auto space-y-4 z-50 border border-black/[.08] dark:border-white/[.08]">
+            <Dialog.Title className="text-xl font-semibold">
+              Welcome to CO-STAR Prompt Builder! 👋
+            </Dialog.Title>
+            
+            <div className="space-y-6">
+              <p className="text-foreground/70">
+                This tool helps you create structured prompts for AI models using the CO-STAR framework.
+                Each step guides you through a specific aspect of your prompt to ensure clear and effective communication with AI.
+              </p>
+
+              <div className="space-y-4">
+                <h3 className="font-semibold">How It Works</h3>
+                <div className="grid gap-4">
+                  {Object.entries(steps).map(([key, value]) => (
+                    <div key={key} className="space-y-2">
+                      <h4 className="font-medium">
+                        {value.title}
+                        <span className="text-foreground/50 ml-1">({key[0].toUpperCase()})</span>
+                      </h4>
+                      <p className="text-sm text-foreground/70">{value.description}</p>
+                      <div className="bg-black/[.05] dark:bg-white/[.06] p-3 rounded-lg">
+                        <p className="text-sm font-mono">Example: {examples[key as keyof typeof examples]}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <h3 className="font-semibold">Tips</h3>
+                <ul className="list-disc pl-4 space-y-1 text-sm text-foreground/70">
+                  <li>Use Cmd/Ctrl + Enter to quickly advance to the next step</li>
+                  <li>Save templates for frequently used content</li>
+                  <li>Copy the generated XML prompt to use with your favorite AI model</li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="flex justify-end pt-4">
+              <button
+                className="button-primary"
+                onClick={handleCloseFirstVisit}
+              >
+                Get Started
+              </button>
+            </div>
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
+
       <div className="min-h-screen p-8 bg-[#fafafa] dark:bg-[#111] relative">
         {/* Menu Button */}
         <button
